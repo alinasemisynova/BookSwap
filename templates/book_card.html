@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Данные о книге</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        a {
+            text-decoration: none;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style='height:45px; background-color: #483C32e1; display: flex;
+        justify-content: space-between; align-items: center;
+        padding: 25px;' class="header">
+            <div class="left">
+                <a href="/"> <span style="color:#FFECD1"> Главная страница </span> </a>
+            </div>
+            <div class="center">
+                {% if flag == True %}
+                <a href="/wishlist"> <span style="color:#FFECD1"> Список желаемого </span> </a>
+                {% endif %}
+            </div>
+            <div style="width: 200px; display: flex; justify-content: space-around;" class="right">
+                {% if flag == False %}
+                <a href="/registration"> <span style="color:#FFECD1"> Регистрация </span> </a>
+                {% endif %}
+                <a href="/login"> <span style="color:#FFECD1"> Профиль </span> </a>
+            </div>
+        </div>
+        <br>
+        {%block body%}
+        <ul class="list-group">
+
+            <li class="list-group-item">Название: {{title}}</li>
+            <li class="list-group-item">Автор: {{author}}</li>
+            <li class="list-group-item">Жанр: {{genre}}</li>
+            <li class="list-group-item">Описание: {{desc}}</li>
+            <li hidden class="list-group-item">id: {{id}}</li>
+            <li hidden class="list-group-item">id: {{user_id}}</li>
+            <br>
+            <h2> <span style="color:#FFECD1"> Информация о пользователе </span> </h2>
+            <br>
+            <li class="list-group-item">Имя: {{result.name}}</li>
+            <li class="list-group-item">Почта: {{result.email}}</li>
+        </ul>
+        {% if flag == True %}
+        <button style="background-color: #483C32e1; color:#FFECD1;" class="btn mt-3" onclick="addToWishlist()">Добавить в желаемое</button>
+        {% endif %}
+        {% endblock %}
+    </div>
+</body>
+
+<style>
+    body {background: url(https://catherineasquithgallery.com/uploads/posts/2023-01/1674536674_catherineasquithgallery-com-p-fon-korichnevie-knigi-215.jpg) center center no-repeat fixed; background-size:cover;}
+</style>
+
+<script>
+    function addToWishlist() {
+        const book = {
+            id: "{{id}}",
+            user_id: "{{user_id}}",
+            title: "{{title}}",
+            author: "{{author}}",
+            genre: "{{genre}}",
+            desc: "{{desc}}"
+        };
+        const user_id = "{{ user_id }}";
+        const wishlistKey = `wishlist_${user_id}`
+        let wishlist = localStorage.getItem(wishlistKey);
+        wishlist = wishlist ? JSON.parse(wishlist) : [];
+        if (!wishlist.some(b => b.title === book.title && b.author === book.author)) {
+            wishlist.push(book);
+            localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
+            alert('Книга добавлена в желаемое');
+        } else {
+            alert('Книга уже находится в желаемом');
+        }
+    }
+</script>
+
+</html>
